@@ -80,6 +80,51 @@ body.anniversary-theme{--pink:#e75b9a;--pink-dark:#b52f72;--rose:#f8d7ed;--soft:
 body.anniversary-theme .section-title,body.anniversary-theme h1{color:#bd4388}
 @media(min-width:600px){.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}.photo img{height:220px}.card{padding:28px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Extra romantic interactions */
+.timebox{perspective:700px;background:linear-gradient(145deg,#ffffffed,#fff0f7);backdrop-filter:blur(10px);box-shadow:0 8px 24px #bc4d7b12}
+.timebox strong{transition:transform .28s ease,opacity .28s ease;transform-origin:center}
+.timebox strong.tick{animation:numberFlip .38s cubic-bezier(.2,.7,.2,1)}
+@keyframes numberFlip{0%{transform:rotateX(0) translateY(0);opacity:1}45%{transform:rotateX(-80deg) translateY(-4px);opacity:.2}100%{transform:rotateX(0) translateY(0);opacity:1}}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.feature-card{background:#ffffffdb;border:1px solid #fff;border-radius:20px;padding:18px 14px;box-shadow:var(--shadow);min-width:0}
+.feature-card h3{margin:4px 0 8px;color:#c83f7d;font-size:19px}
+.feature-card p{font:13px/1.8 Arial,sans-serif;margin:8px 0}
+.gift-wrap{font-size:76px;line-height:1.3;display:block;margin:8px auto;filter:drop-shadow(0 10px 8px #d43f7d20);transition:transform .3s}
+.gift-wrap.opening{animation:giftOpen .8s ease forwards}
+@keyframes giftOpen{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-10deg) scale(1.1)}50%{transform:rotate(10deg) scale(1.16)}100%{transform:rotate(0) scale(1.04)}}
+.secret-result,.gift-message,.anniversary-reveal{display:none;margin-top:16px;animation:appear .7s ease}
+.secret-result.show,.gift-message.show,.anniversary-reveal.show{display:block}
+.secret-form{display:flex;gap:8px;max-width:500px;margin:16px auto 0}
+.secret-form input{min-width:0;flex:1;border:1px solid #f0b5cc;border-radius:22px;padding:12px 14px;font:15px Arial,sans-serif;background:#fff}
+.timeline{position:relative;max-width:620px;margin:24px auto 0;padding-left:25px}
+.timeline:before{content:"";position:absolute;left:8px;top:5px;bottom:5px;width:2px;background:linear-gradient(#f58ab4,#e8c1d5)}
+.timeline-item{position:relative;margin:0 0 18px;padding:16px;border-radius:18px;background:#ffffffdc;border:1px solid #fff;box-shadow:var(--shadow)}
+.timeline-item:before{content:"♡";position:absolute;left:-27px;top:17px;color:#e44d8c;font-size:20px;background:#fff2f8;border-radius:50%;line-height:23px;width:23px;text-align:center}
+.timeline-item small{font:700 10px Arial,sans-serif;letter-spacing:1px;color:#c75a86;text-transform:uppercase}
+.timeline-item h3{margin:5px 0;color:#c83f7d;font-size:19px}.timeline-item p{font:13px/1.8 Arial,sans-serif;margin:0}
+.voice-player{width:100%;margin-top:10px;accent-color:#e34b8c}
+.cake-button{font-size:94px;border:0;background:transparent;display:block;margin:8px auto;filter:drop-shadow(0 9px 10px #a65b7220);transition:transform .2s}
+.cake-button:active{transform:scale(.93)}.candle-hint{text-align:center;font:13px/1.8 Arial,sans-serif}
+.candle-flames{font-size:22px;letter-spacing:7px;text-align:center;min-height:28px;animation:flame 1s ease-in-out infinite alternate}
+@keyframes flame{from{transform:translateY(1px) scale(.98)}to{transform:translateY(-2px) scale(1.04)}}
+.polaroid-lightbox{display:none;position:fixed;inset:0;z-index:30;background:#2d1324eF;align-items:center;justify-content:center;padding:20px}
+.polaroid-lightbox.show{display:flex;animation:appear .2s ease}
+.polaroid-large{max-width:min(92vw,480px);max-height:85vh;background:white;padding:10px 10px 16px;box-shadow:0 20px 70px #0007;transform:rotate(-2deg);animation:photoZoom .3s ease}
+.polaroid-large img{display:block;width:100%;max-height:65vh;object-fit:contain;background:#ffe7f0}
+.polaroid-large p{text-align:center;font:15px/1.5 Georgia,serif;color:#71304e;margin:12px 4px 0}
+@keyframes photoZoom{from{transform:scale(.7) rotate(-7deg);opacity:0}to{transform:scale(1) rotate(-2deg);opacity:1}}
+.lightbox-close{position:absolute;right:18px;top:18px;border:0;background:#fff;color:#c83f7d;border-radius:50%;width:42px;height:42px;font-size:24px}
+.player-controls{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.player-status{font:12px/1.6 Arial,sans-serif;text-align:center;color:#98516e;min-height:20px}
+.confetti-piece{position:fixed;z-index:50;top:-15px;width:9px;height:14px;pointer-events:none;animation:confettiFall linear forwards}
+@keyframes confettiFall{to{transform:translate3d(var(--drift),110vh,0) rotate(760deg);opacity:.9}}
+.firework{position:fixed;z-index:49;pointer-events:none;font-size:25px;animation:fireworkPop 1.4s ease-out forwards}
+@keyframes fireworkPop{0%{transform:scale(.2);opacity:0}25%{transform:scale(1.4);opacity:1}100%{transform:translateY(-100px) scale(.7);opacity:0}}
+body.birthday-theme .feature-card h3,body.birthday-theme .timeline-item h3{color:#c87918}
+body.anniversary-theme .feature-card h3,body.anniversary-theme .timeline-item h3{color:#bd4388}
+@media(max-width:420px){.feature-grid{grid-template-columns:1fr}.secret-form{flex-direction:column}.secret-form .btn{width:100%;margin:0}.feature-card{padding:17px}}
+
 </style>
 </head>
 <body>
@@ -162,16 +207,103 @@ Keep being your adorable self, my sweetest Rasmalaiii. No website could ever ful
   </article>
 </section>
 
+
+<section id="secret-letter">
+  <h2 class="section-title">A letter only you can unlock 🔐</h2>
+  <p class="intro">There's a little message hiding here, my Rasmalaiii. Enter our special word. 💌</p>
+  <div class="card">
+    <form class="secret-form" id="secretForm">
+      <input id="secretWord" type="password" placeholder="Our special word…" autocomplete="off" aria-label="Secret word" required>
+      <button class="btn" type="submit">Unlock my letter 💗</button>
+    </form>
+    <p class="note" id="secretHint">Hint: choose a word only the two of you would know. The owner can change it in the settings near the bottom of this HTML file.</p>
+    <article class="secret-result card" id="secretResult">
+      <h3 style="text-align:center">You found my hidden letter, Rasmalaiii 🥹</h3>
+      <p class="letter">If you are reading this, you found the little secret I saved just for you. Even on days when I can't find the perfect words, I hope you never forget that you matter to me. I want to keep collecting little moments with you — silly laughs, honest talks, and memories that become our favourite stories. Whenever you miss me, come back here and remember that someone is cheering for your smile. 💗</p>
+      <p class="signature">Always yours ♡</p>
+    </article>
+  </div>
+</section>
+
+<section id="gift">
+  <h2 class="section-title">A little gift for you 🎁</h2>
+  <p class="intro">No wrapping paper can hold how much love I wanted to send you. Tap the gift!</p>
+  <div class="card" style="text-align:center">
+    <button class="gift-wrap" id="giftBtn" aria-label="Open your virtual gift" aria-expanded="false">🎁</button>
+    <p class="note">Tap to unwrap your surprise ♡</p>
+    <article class="gift-message card" id="giftMessage">
+      <div style="font-size:42px">✨💗✨</div>
+      <h3>One wish, just for you</h3>
+      <p class="letter">My gift to you is a promise to keep appreciating the little things that make you you. I hope this year brings you confidence, happiness, kind people, and beautiful surprises. And I hope I get to be part of many of those smiles. Happy birthday in advance, my sweetest Rasmalaiii! 🧸💕</p>
+    </article>
+  </div>
+</section>
+
+<section id="timeline-section">
+  <h2 class="section-title">Our story, one moment at a time 🧸</h2>
+  <p class="intro">A little timeline for the memories that made us “us”. You can edit these moments to match your real story.</p>
+  <div class="timeline">
+    <article class="timeline-item"><small>THE BEGINNING</small><h3>The day our story began 💗</h3><p>That first chapter of our story — the beginning of so many moments still waiting for us.</p></article>
+    <article class="timeline-item"><small>A FAVOURITE MEMORY</small><h3>A moment I keep close 🌸</h3><p>One of those little moments that may look ordinary to the world, but means something special to me.</p></article>
+    <article class="timeline-item"><small>RIGHT NOW</small><h3>Still choosing our story ♡</h3><p>We are still making memories, learning about each other, and adding new pages to our story.</p></article>
+    <article class="timeline-item"><small>WHAT'S NEXT</small><h3>More memories to come ✨</h3><p>More laughs, more pictures, more adventures, and more reasons to smile together.</p></article>
+  </div>
+  <p class="note">Personalize the timeline text in the HTML to include your actual first chat, first meeting, and favourite dates.</p>
+</section>
+
+<section id="voice-message">
+  <h2 class="section-title">Whenever you miss me 🎧</h2>
+  <p class="intro">I saved a little space for my voice, so you can hear me whenever you want.</p>
+  <div class="card">
+    <div style="text-align:center;font-size:42px">🎙️💗</div>
+    <h3 style="text-align:center;color:#c83f7d">A voice note for my Rasmalaiii</h3>
+    <p class="intro">Record a message and upload it to <strong>assets/voice-message.mp3</strong> in your GitHub repository.</p>
+    <audio id="voiceAudio" class="voice-player" controls preload="none"><source src="assets/voice-message.mp3" type="audio/mpeg">Your browser does not support audio playback.</audio>
+    <p class="player-status" id="voiceStatus">Add your voice recording as assets/voice-message.mp3 to make this player work.</p>
+  </div>
+</section>
+
+<section id="birthday-cake">
+  <h2 class="section-title">A cake just for you 🎂</h2>
+  <p class="intro">First tap to light your candles. Make a wish, then tap again to blow them out! ✨</p>
+  <div class="card" style="text-align:center">
+    <div class="candle-flames" id="candleFlames" aria-hidden="true">🕯️ 🕯️ 🕯️</div>
+    <button class="cake-button" id="cakeBtn" aria-label="Light the birthday candles">🎂</button>
+    <p class="candle-hint" id="cakeHint">Your candles are waiting, birthday girl. 💗</p>
+  </div>
+</section>
+
+<section id="anniversary-memory">
+  <h2 class="section-title">A memory for our anniversary 💍</h2>
+  <p class="intro">This little chapter unlocks on October 7, 2027. Until then, it is waiting for our special day.</p>
+  <div class="card" style="text-align:center">
+    <div style="font-size:42px">🔒💞</div>
+    <p id="anniversaryLockText">Our anniversary memory is waiting to be unlocked. Keep counting down with me. 💗</p>
+    <article class="anniversary-reveal" id="anniversaryReveal">
+      <div style="font-size:44px">💍✨💗</div>
+      <h3>Happy Anniversary, my Rasmalaiii!</h3>
+      <p class="letter">One more chapter of our story, and so many more to write. Thank you for the moments we've shared and for every little thing that makes our connection special. I hope we always keep making time for laughter, kindness, honesty, and memories that feel like home. Here's to our story — yesterday, today, and all the tomorrows ahead. 🥹💕</p>
+      <div class="feature-grid" style="margin-top:14px">
+        <div class="feature-card"><div style="font-size:30px">📸</div><strong>Our memories</strong><p>Open the album above and revisit our favourite photos.</p></div>
+        <div class="feature-card"><div style="font-size:30px">🎶</div><strong>Our song</strong><p>Play the music and let this moment become another memory.</p></div>
+      </div>
+      <button class="btn" onclick="document.getElementById('album').scrollIntoView({behavior:'smooth'})">Revisit our album 💗</button>
+    </article>
+  </div>
+</section>
+
 <footer>
   Made with 💗 for Sowikshya<br>
   My Rasmalaiii, my favourite notification. 🧸<br>
-  <span style="color:#d94381">One little website, lots of love.</span>
+  <span style="color:#d94381">One little website, lots of love.</span><br><span class="note">For your voice, upload assets/voice-message.mp3. Optional extra songs: assets/music-2.mp3 and assets/music-3.mp3.</span>
 </footer>
 
-<audio id="bgMusic" loop preload="none">
-  <source src="assets/music.mp3" type="audio/mpeg">
-</audio>
-<button class="music" id="musicBtn" aria-label="Toggle background music">♫ Music: OFF</button>
+<div class="polaroid-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Photo memory">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close photo">×</button>
+  <div class="polaroid-large"><img id="lightboxImage" alt="Our memory"><p id="lightboxCaption"></p></div>
+</div>
+<audio id="bgMusic" loop preload="none"><source src="assets/music.mp3" type="audio/mpeg"></audio>
+<button class="music" id="musicBtn" aria-label="Open music player">♫ Music: OFF</button>
 
 <script>
 /*
@@ -210,8 +342,14 @@ function updateOneCountdown(target, prefix, messageId, celebration) {
   ];
   ids.forEach((id, index) => {
     const value = values[index];
-    document.getElementById(prefix + "-" + id).textContent =
-      index === 0 ? String(value) : String(value).padStart(2, "0");
+    const node = document.getElementById(prefix + "-" + id);
+    const nextText = index === 0 ? String(value) : String(value).padStart(2, "0");
+    if (node.textContent !== nextText) {
+      node.textContent = nextText;
+      node.classList.remove("tick");
+      void node.offsetWidth;
+      node.classList.add("tick");
+    }
   });
 }
 function updateCountdowns() {
@@ -236,6 +374,16 @@ function updateCountdowns() {
     eyebrow.textContent = "Happy Birthday, Sowikshya · today is all about you 🎂";
   } else {
     eyebrow.textContent = "A little corner of the internet · made with love";
+  }
+  const anniversaryUnlocked = now >= anniversaryTarget;
+  document.getElementById("anniversaryReveal").classList.toggle("show", anniversaryUnlocked);
+  document.getElementById("anniversaryLockText").textContent = anniversaryUnlocked
+    ? "Unlocked — this memory is for us. Happy anniversary! 💗"
+    : "Our anniversary memory is waiting to be unlocked. Keep counting down with me. 💗";
+  const isBirthday = now.getFullYear() === birthdayTarget.getFullYear() && now.getMonth() === birthdayTarget.getMonth() && now.getDate() === birthdayTarget.getDate();
+  if (isBirthday && !sessionStorage.getItem("rasmalaiBirthdayCelebrated")) {
+    sessionStorage.setItem("rasmalaiBirthdayCelebrated", "yes");
+    startBirthdayCelebration();
   }
 }
 updateCountdowns();
@@ -271,22 +419,6 @@ albumBtn.addEventListener("click", () => {
     setTimeout(() => {
       if (!albumDrop.classList.contains("open")) albumDrop.style.display = "none";
     }, 250);
-  }
-});
-
-const music = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
-musicBtn.addEventListener("click", async () => {
-  if (music.paused) {
-    try {
-      await music.play();
-      musicBtn.textContent = "♫ Music: ON";
-    } catch (error) {
-      musicBtn.textContent = "Add assets/music.mp3 🎵";
-    }
-  } else {
-    music.pause();
-    musicBtn.textContent = "♫ Music: OFF";
   }
 });
 
@@ -366,6 +498,179 @@ async function loadPhotoAlbum() {
     note.textContent = "The album uses the GitHub public repository API; its unauthenticated request limit may apply.";
   }
 }
+
+/* PERSONAL SETTINGS — change these to make the page yours. */
+const SECRET_WORD = "rasmalai"; // Change this to your private word. This is a playful lock, not secure encryption.
+const MUSIC_TRACKS = [
+  { src: "assets/music.mp3", title: "Our song ♡" },
+  { src: "assets/music-2.mp3", title: "Another little melody ♡" },
+  { src: "assets/music-3.mp3", title: "One more for you ♡" }
+];
+let currentTrack = 0;
+let cakeLit = false;
+
+// Secret letter
+const secretForm = document.getElementById("secretForm");
+secretForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const entered = document.getElementById("secretWord").value.trim().toLocaleLowerCase();
+  if (entered === SECRET_WORD.toLocaleLowerCase()) {
+    document.getElementById("secretResult").classList.add("show");
+    document.getElementById("secretHint").textContent = "Unlocked with love. This letter is yours. 💗";
+    document.getElementById("secretWord").value = "";
+    for (let i = 0; i < 12; i++) makeHeart();
+  } else {
+    document.getElementById("secretHint").textContent = "Not quite, my love. Try the special word again. 💌";
+    document.getElementById("secretWord").focus();
+  }
+});
+
+// Gift box
+const giftBtn = document.getElementById("giftBtn");
+giftBtn.addEventListener("click", () => {
+  const message = document.getElementById("giftMessage");
+  const opening = !message.classList.contains("show");
+  if (opening) {
+    giftBtn.classList.add("opening");
+    giftBtn.textContent = "🎀";
+    message.classList.add("show");
+    giftBtn.setAttribute("aria-expanded", "true");
+    for (let i = 0; i < 24; i++) makeHeart();
+    launchConfetti(70);
+  } else {
+    message.classList.remove("show");
+    giftBtn.textContent = "🎁";
+    giftBtn.classList.remove("opening");
+    giftBtn.setAttribute("aria-expanded", "false");
+  }
+});
+
+// Interactive Polaroid lightbox, including photos that load later from GitHub.
+const photoLightbox = document.getElementById("photoLightbox");
+function closeLightbox() { photoLightbox.classList.remove("show"); }
+document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+photoLightbox.addEventListener("click", (event) => { if (event.target === photoLightbox) closeLightbox(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeLightbox(); });
+document.getElementById("gallery").addEventListener("click", (event) => {
+  const card = event.target.closest(".photo");
+  if (!card) return;
+  const img = card.querySelector("img");
+  const caption = card.querySelector("p");
+  if (!img) return;
+  document.getElementById("lightboxImage").src = img.src;
+  document.getElementById("lightboxImage").alt = img.alt;
+  document.getElementById("lightboxCaption").textContent = caption ? caption.textContent : "Our little memory ♡";
+  photoLightbox.classList.add("show");
+});
+
+// Birthday cake: first tap lights candles; second tap blows them out.
+const cakeBtn = document.getElementById("cakeBtn");
+cakeBtn.addEventListener("click", () => {
+  cakeLit = !cakeLit;
+  document.getElementById("candleFlames").textContent = cakeLit ? "🔥 🕯️ 🔥" : "💨 ✨ 💨";
+  cakeBtn.textContent = cakeLit ? "🎂" : "🍰";
+  cakeBtn.setAttribute("aria-label", cakeLit ? "Blow out the birthday candles" : "Light the birthday candles");
+  document.getElementById("cakeHint").textContent = cakeLit
+    ? "Make a wish, Sowikshya! Then tap the cake to blow them out. ✨💗"
+    : "Wish sent to the universe! May your year be full of smiles. 💗";
+  if (!cakeLit) launchConfetti(45);
+});
+
+// Multi-track player: optional music-2.mp3 / music-3.mp3; missing files simply show a helpful status.
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+let playerOpen = false;
+const playerPanel = document.createElement("div");
+playerPanel.className = "card";
+playerPanel.style.cssText = "display:none;position:fixed;right:12px;bottom:65px;z-index:20;width:min(310px,calc(100vw - 24px));padding:16px;background:#fffafd;";
+playerPanel.innerHTML = '<div style="font-weight:bold;text-align:center;color:#c83f7d" id="trackTitle">Our song ♡</div><div class="player-controls"><button class="btn secondary" id="prevTrack">⏮</button><button class="btn" id="playPauseTrack">▶ Play</button><button class="btn secondary" id="nextTrack">⏭</button></div><p class="player-status" id="trackStatus">Add MP3 files in the assets folder.</p>';
+document.body.appendChild(playerPanel);
+function loadTrack(index, autoplay) {
+  currentTrack = (index + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
+  music.src = MUSIC_TRACKS[currentTrack].src;
+  document.getElementById("trackTitle").textContent = MUSIC_TRACKS[currentTrack].title;
+  document.getElementById("trackStatus").textContent = "Track " + (currentTrack + 1) + " of " + MUSIC_TRACKS.length;
+  if (autoplay) music.play().then(() => { musicBtn.textContent = "♫ Music: ON"; document.getElementById("playPauseTrack").textContent = "⏸ Pause"; }).catch(() => {
+    document.getElementById("trackStatus").textContent = "Couldn't play this file. Check that " + MUSIC_TRACKS[currentTrack].src + " exists.";
+  });
+}
+musicBtn.addEventListener("click", async () => {
+  playerOpen = !playerOpen;
+  playerPanel.style.display = playerOpen ? "block" : "none";
+  if (!playerOpen) return;
+  if (!music.src || !music.src.includes(MUSIC_TRACKS[currentTrack].src.split("/").pop())) loadTrack(currentTrack, false);
+  document.getElementById("playPauseTrack").textContent = music.paused ? "▶ Play" : "⏸ Pause";
+});
+document.getElementById("playPauseTrack").addEventListener("click", async () => {
+  if (music.paused) {
+    try { await music.play(); musicBtn.textContent = "♫ Music: ON"; document.getElementById("playPauseTrack").textContent = "⏸ Pause"; document.getElementById("trackStatus").textContent = MUSIC_TRACKS[currentTrack].title; }
+    catch (error) { document.getElementById("trackStatus").textContent = "Add " + MUSIC_TRACKS[currentTrack].src + " to your GitHub assets folder."; }
+  } else { music.pause(); musicBtn.textContent = "♫ Music: OFF"; document.getElementById("playPauseTrack").textContent = "▶ Play"; }
+});
+document.getElementById("nextTrack").addEventListener("click", () => loadTrack(currentTrack + 1, !music.paused));
+document.getElementById("prevTrack").addEventListener("click", () => loadTrack(currentTrack - 1, !music.paused));
+music.addEventListener("ended", () => { if (!music.loop) loadTrack(currentTrack + 1, true); });
+music.addEventListener("error", () => {
+  if (playerOpen) document.getElementById("trackStatus").textContent = "Add " + MUSIC_TRACKS[currentTrack].src + " to your repository's assets folder.";
+});
+
+// Voice note status
+const voiceAudio = document.getElementById("voiceAudio");
+voiceAudio.addEventListener("error", () => { document.getElementById("voiceStatus").textContent = "Voice note not uploaded yet. Add assets/voice-message.mp3 when you're ready. 🎙️"; });
+voiceAudio.addEventListener("canplay", () => { document.getElementById("voiceStatus").textContent = "Your voice note is ready. Tap play whenever you miss each other. 💗"; });
+
+// Birthday confetti and tiny fireworks. Celebration is automatic on Jan 29, 2027 in the visitor's local time.
+function launchConfetti(amount) {
+  const symbols = ["✦", "♥", "✧", "•"];
+  for (let i = 0; i < amount; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.color = ["#ef4c91", "#ffbd59", "#d58be8", "#f28da8", "#ffffff"][Math.floor(Math.random() * 5)];
+    piece.style.setProperty("--drift", (Math.random() * 180 - 90) + "px");
+    piece.style.animationDuration = (2.4 + Math.random() * 2.4) + "s";
+    piece.style.fontSize = (10 + Math.random() * 12) + "px";
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 5200);
+  }
+}
+function launchFireworks() {
+  for (let i = 0; i < 16; i++) {
+    const spark = document.createElement("span");
+    spark.className = "firework";
+    spark.textContent = ["🎆", "✨", "💖", "🎇"][Math.floor(Math.random() * 4)];
+    spark.style.left = (5 + Math.random() * 90) + "vw";
+    spark.style.top = (10 + Math.random() * 55) + "vh";
+    spark.style.animationDelay = (Math.random() * 1.2) + "s";
+    document.body.appendChild(spark);
+    setTimeout(() => spark.remove(), 3000);
+  }
+}
+function startBirthdayCelebration() {
+  document.getElementById("birthdayMessage").textContent = "HAPPY BIRTHDAY, MY RASMALAIII! 🎂🎆 Today the whole little world is celebrating YOU! 💗";
+  launchConfetti(150);
+  launchFireworks();
+  setTimeout(() => launchConfetti(100), 900);
+}
+
+// Heart trails follow taps and pointer movement without adding too many elements.
+let lastTrailAt = 0;
+function heartTrail(x, y) {
+  const now = Date.now();
+  if (now - lastTrailAt < 90) return;
+  lastTrailAt = now;
+  const heart = document.createElement("span");
+  heart.textContent = Math.random() > .45 ? "♡" : "♥";
+  heart.style.cssText = "position:fixed;left:" + x + "px;top:" + y + "px;z-index:45;pointer-events:none;color:#ed5796;font-size:" + (12 + Math.random() * 12) + "px;transition:transform .8s ease,opacity .8s ease;opacity:.95";
+  document.body.appendChild(heart);
+  requestAnimationFrame(() => { heart.style.transform = "translateY(-26px) scale(1.5) rotate(15deg)"; heart.style.opacity = "0"; });
+  setTimeout(() => heart.remove(), 900);
+}
+document.addEventListener("pointermove", (event) => { if (event.pointerType === "mouse") heartTrail(event.clientX, event.clientY); });
+document.addEventListener("pointerdown", (event) => heartTrail(event.clientX, event.clientY));
+
+
 loadPhotoAlbum();
 </script>
 </body>
