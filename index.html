@@ -56,6 +56,28 @@ footer{text-align:center;padding:30px 16px 85px;font:13px/2 Arial,sans-serif}
 .float-heart{position:fixed;z-index:8;bottom:-30px;pointer-events:none;animation:rise linear forwards}
 @keyframes rise{to{transform:translateY(-115vh) rotate(30deg);opacity:0}}
 .note{font:12px/1.7 Arial,sans-serif;text-align:center;color:#9d6580;margin-top:14px}
+.album-drop{display:none;position:relative;margin-top:28px;padding:24px 8px 8px;opacity:0}
+.album-drop.open{display:block;animation:albumReveal .35s ease forwards}
+.album-rope{position:absolute;top:0;left:7%;right:7%;height:20px;border-top:3px dashed #d59aaf;opacity:.9}
+.album-rope:before,.album-rope:after{content:"";position:absolute;top:-4px;width:8px;height:8px;border-radius:50%;background:#d59aaf}
+.album-rope:before{left:0}.album-rope:after{right:0}
+.album-drop .photo{position:relative;overflow:visible;border:0;background:transparent;box-shadow:none;padding-top:18px;opacity:0;transform:translateY(-90px) rotate(var(--tilt,-3deg));transform-origin:top center}
+.album-drop.open .photo{animation:photoDrop .85s cubic-bezier(.2,.8,.25,1) forwards;animation-delay:var(--delay,0s)}
+.album-drop .photo:before{content:"";position:absolute;z-index:2;top:-9px;left:50%;width:2px;height:28px;background:repeating-linear-gradient(to bottom,#c18a9e 0 4px,transparent 4px 7px);transform:translateX(-50%)}
+.album-drop .photo:after{content:"";position:absolute;z-index:3;top:14px;left:calc(50% - 4px);width:8px;height:8px;border-radius:50%;background:#f7c3d6;border:1px solid #d58aa9}
+.album-drop .photo img{border:5px solid white;border-radius:5px 5px 2px 2px;box-shadow:0 7px 18px #8d42651c;height:190px}
+.album-drop .photo p{box-shadow:0 7px 18px #8d42651c;border-radius:0 0 5px 5px}
+@keyframes albumReveal{to{opacity:1}}
+@keyframes photoDrop{0%{opacity:0;transform:translateY(-90px) rotate(var(--tilt,-3deg))}70%{opacity:1;transform:translateY(8px) rotate(var(--tilt,-3deg))}85%{transform:translateY(-4px) rotate(var(--tilt,-3deg))}100%{opacity:1;transform:translateY(0) rotate(var(--tilt,-3deg))}}
+body.birthday-theme{--pink:#ff9a32;--pink-dark:#c76a17;--rose:#ffe7a8;--soft:#fff8df;--ink:#754322;--line:#ffd58a;background:linear-gradient(160deg,#fff9e7,#ffe9b5 48%,#fff3d5)}
+body.birthday-theme .section-title,body.birthday-theme h1{color:#d47718}
+body.birthday-theme .btn,body.birthday-theme .music{background:linear-gradient(135deg,#ffbd59,#ed8c25);color:#fff}
+body.birthday-theme .big-heart{color:#f29a32}
+body.birthday-theme .hero:before,body.birthday-theme .hero:after{content:"✦";color:#eab45e}
+body.birthday-theme .timebox strong{color:#d47718}
+body.birthday-theme .count-heading{color:#bd711f}
+body.anniversary-theme{--pink:#e75b9a;--pink-dark:#b52f72;--rose:#f8d7ed;--soft:#fff0fa;--ink:#71304e;--line:#f5c3df;background:linear-gradient(160deg,#fff8fd,#f8dff0 48%,#fff2fa)}
+body.anniversary-theme .section-title,body.anniversary-theme h1{color:#bd4388}
 @media(min-width:600px){.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}.photo img{height:220px}.card{padding:28px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
@@ -91,12 +113,14 @@ Keep being your adorable self, my sweetest Rasmalaiii. No website could ever ful
 </section>
 
 <section id="album">
-  <h2 class="section-title">Our photo album 📸</h2>
-  <p class="intro">Our little moments, saved in one place. Add pictures to the GitHub folder <strong>assets/photos/</strong> and they'll appear here automatically after the site updates.</p>
-  <div class="gallery" id="gallery" aria-live="polite">
-    <div class="empty">Loading our memories… 💗</div>
+  <h2 class="section-title">Our little memories 📸</h2>
+  <p class="intro">A tiny collection of moments that mean a lot to me.</p>
+  <div style="text-align:center"><button class="btn" id="albumBtn" aria-expanded="false" aria-controls="albumDrop">Open Our Album 💗</button></div>
+  <div id="albumDrop" class="album-drop" aria-hidden="true">
+    <div class="album-rope" aria-hidden="true"></div>
+    <div class="gallery" id="gallery" aria-live="polite"><div class="empty">Loading our memories… 💗</div></div>
+    <p class="note" id="galleryNote">Add photos to <strong>assets/photos/</strong> in GitHub and they'll appear here automatically.</p>
   </div>
-  <p class="note" id="galleryNote">Supported image types: JPG, JPEG, PNG, WEBP, and GIF.</p>
 </section>
 
 <section id="birthday">
@@ -191,6 +215,7 @@ function updateOneCountdown(target, prefix, messageId, celebration) {
   });
 }
 function updateCountdowns() {
+  const now = new Date();
   updateOneCountdown(
     birthdayTarget, "b", "birthdayMessage",
     "Happy Birthday, Sowikshya! I hope your day is full of love and smiles. 🎂💗"
@@ -199,6 +224,19 @@ function updateCountdowns() {
     anniversaryTarget, "a", "anniversaryMessage",
     "Happy First Anniversary to us! Here's to our story and the memories still to come. 💍💗"
   );
+
+  // Birthday theme starts on Jan 29, 2027 and stays until the anniversary.
+  document.body.classList.remove("birthday-theme", "anniversary-theme");
+  const eyebrow = document.querySelector(".hero .eyebrow");
+  if (now >= anniversaryTarget) {
+    document.body.classList.add("anniversary-theme");
+    eyebrow.textContent = "Happy First Anniversary · made with love 💍";
+  } else if (now >= birthdayTarget) {
+    document.body.classList.add("birthday-theme");
+    eyebrow.textContent = "Happy Birthday, Sowikshya · today is all about you 🎂";
+  } else {
+    eyebrow.textContent = "A little corner of the internet · made with love";
+  }
 }
 updateCountdowns();
 setInterval(updateCountdowns, 1000);
@@ -208,6 +246,32 @@ document.getElementById("surpriseBtn").addEventListener("click", function() {
   this.textContent = "Surprise opened! 💗";
   this.disabled = true;
   for (let i = 0; i < 20; i++) makeHeart();
+});
+
+const albumBtn = document.getElementById("albumBtn");
+const albumDrop = document.getElementById("albumDrop");
+albumBtn.addEventListener("click", () => {
+  const opening = !albumDrop.classList.contains("open");
+  if (opening) {
+    albumDrop.style.display = "block";
+    void albumDrop.offsetHeight;
+    albumDrop.classList.add("open");
+    albumDrop.setAttribute("aria-hidden", "false");
+    albumBtn.setAttribute("aria-expanded", "true");
+    albumBtn.textContent = "Close Our Album ♡";
+    albumDrop.querySelectorAll(".photo").forEach((card, index) => {
+      card.style.setProperty("--delay", (index * 0.12) + "s");
+      card.style.setProperty("--tilt", index % 2 ? "3deg" : "-3deg");
+    });
+  } else {
+    albumDrop.classList.remove("open");
+    albumDrop.setAttribute("aria-hidden", "true");
+    albumBtn.setAttribute("aria-expanded", "false");
+    albumBtn.textContent = "Open Our Album 💗";
+    setTimeout(() => {
+      if (!albumDrop.classList.contains("open")) albumDrop.style.display = "none";
+    }, 250);
+  }
 });
 
 const music = document.getElementById("bgMusic");
@@ -283,6 +347,8 @@ async function loadPhotoAlbum() {
     photos.forEach((file, index) => {
       const card = document.createElement("div");
       card.className = "photo";
+      card.style.setProperty("--delay", (index * 0.12) + "s");
+      card.style.setProperty("--tilt", index % 2 ? "3deg" : "-3deg");
       const img = document.createElement("img");
       img.loading = "lazy";
       img.alt = "Our memory " + (index + 1);
