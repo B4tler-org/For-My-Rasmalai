@@ -125,6 +125,23 @@ body.birthday-theme .feature-card h3,body.birthday-theme .timeline-item h3{color
 body.anniversary-theme .feature-card h3,body.anniversary-theme .timeline-item h3{color:#bd4388}
 @media(max-width:420px){.feature-grid{grid-template-columns:1fr}.secret-form{flex-direction:column}.secret-form .btn{width:100%;margin:0}.feature-card{padding:17px}}
 
+
+/* Shared video memories */
+.video-hub{display:grid;gap:16px}
+.video-auth-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.video-input{width:100%;padding:12px 14px;border:1px solid #f2bfd3;border-radius:13px;background:#fffafd;color:#71304e;font:14px Arial,sans-serif;margin:5px 0}
+.video-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.video-actions .btn{margin:2px}
+.video-preview{width:100%;max-height:420px;background:#24131d;border-radius:16px;display:block;margin-top:10px}
+.video-status{font:13px/1.7 Arial,sans-serif;text-align:center;color:#92516d;overflow-wrap:anywhere}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:16px}
+.shared-video{min-width:0;border:1px solid #ffe1ec;background:#fffafd;padding:10px;border-radius:18px;box-shadow:0 6px 20px #b8326912}
+.shared-video video{width:100%;display:block;border-radius:12px;background:#24131d;max-height:360px}
+.shared-video strong{display:block;margin:9px 2px 4px;overflow-wrap:anywhere}
+.shared-video small{font:11px/1.5 Arial,sans-serif;color:#9d6580}
+.video-lock-note{font:12px/1.7 Arial,sans-serif;color:#9d6580;background:#fff4f8;border-radius:14px;padding:12px;margin-top:12px}
+@media(min-width:600px){.video-auth-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -289,6 +306,49 @@ Keep being your adorable self, my sweetest Rasmalaiii. No website could ever ful
       </div>
       <button class="btn" onclick="document.getElementById('album').scrollIntoView({behavior:'smooth'})">Revisit our album 💗</button>
     </article>
+  </div>
+</section>
+
+
+<section id="video-memories">
+  <h2 class="section-title">Our little video diary 🎬💗</h2>
+  <p class="intro">Record a moment right here or upload a clip. Once shared storage is connected, every saved memory appears on both of our devices.</p>
+  <div class="video-hub">
+    <div class="card">
+      <h3 style="text-align:center;color:#c83f7d;margin-top:0">Our private memory room 🔐</h3>
+      <p class="video-status">First, connect the online storage in the setup guide. Then create one shared account and sign in on both phones. Keep the login private between you two.</p>
+      <div class="video-auth-grid">
+        <input class="video-input" id="videoEmail" type="email" autocomplete="username" placeholder="Shared account email" aria-label="Shared account email">
+        <input class="video-input" id="videoPassword" type="password" autocomplete="current-password" placeholder="Password (at least 6 characters)" aria-label="Shared account password">
+      </div>
+      <div class="video-actions">
+        <button class="btn" id="videoSignIn">Sign in 💗</button>
+        <button class="btn secondary" id="videoSignUp">Create shared account</button>
+        <button class="btn secondary" id="videoSignOut" hidden>Sign out</button>
+      </div>
+      <p class="video-status" id="videoAuthStatus" aria-live="polite">Online sharing isn't connected yet. Follow the included setup guide to enable it.</p>
+    </div>
+    <div class="card">
+      <h3 style="text-align:center;color:#c83f7d;margin-top:0">Capture a new memory 🎥</h3>
+      <label for="videoTitle" style="font:13px Arial,sans-serif">Memory caption</label>
+      <input class="video-input" id="videoTitle" maxlength="90" placeholder="e.g. A little moment with Rasmalaiii 💗">
+      <video id="recordPreview" class="video-preview" controls playsinline hidden></video>
+      <div class="video-actions">
+        <button class="btn" id="startRecording">🔴 Start recording</button>
+        <button class="btn secondary" id="stopRecording" disabled>Stop recording</button>
+        <label class="btn secondary" for="videoFile" style="display:inline-flex;align-items:center;justify-content:center">⬆️ Choose video</label>
+        <input id="videoFile" type="file" accept="video/*" hidden>
+      </div>
+      <p class="video-status" id="recordStatus" aria-live="polite">Recording needs camera and microphone permission. Use HTTPS and allow access when asked.</p>
+      <div class="video-actions"><button class="btn" id="saveVideo" disabled>Save to our shared memories 💞</button><button class="btn secondary" id="clearVideo" disabled>Clear clip</button></div>
+      <p class="video-lock-note">Privacy note: videos are intended for your shared account. Don't upload intimate or sensitive recordings. Use a private storage bucket and never publish the storage secret key in this HTML.</p>
+    </div>
+    <div class="card">
+      <h3 style="text-align:center;color:#c83f7d;margin-top:0">Memories from both phones 🌷</h3>
+      <div class="video-actions"><button class="btn secondary" id="refreshVideos">↻ Refresh memories</button></div>
+      <p class="video-status" id="videoListStatus" aria-live="polite">Sign in after connecting storage to see shared videos.</p>
+      <div class="video-grid" id="sharedVideoGrid"></div>
+    </div>
   </div>
 </section>
 
@@ -673,5 +733,163 @@ document.addEventListener("pointerdown", (event) => heartTrail(event.clientX, ev
 
 loadPhotoAlbum();
 </script>
+
+<script type="module">
+/*
+ * SHARED VIDEO SETUP:
+ * 1) Create a Supabase project and copy its Project URL + publishable/anon key below.
+ * 2) Create a PRIVATE Storage bucket named "shared-videos".
+ * 3) Run the SQL from the companion setup guide to create the table and policies.
+ * 4) Create one shared email/password account and sign in on both devices.
+ * Never put a service_role/secret key in a website.
+ */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_PROJECT_URL_HERE';
+const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE';
+const VIDEO_BUCKET = 'shared-videos';
+const cloudConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('PASTE_') && !SUPABASE_ANON_KEY.includes('PASTE_');
+const $ = id => document.getElementById(id);
+const authStatus = $('videoAuthStatus'), recordStatus = $('recordStatus'), listStatus = $('videoListStatus');
+let supabase = null, chosenBlob = null, chosenName = '', recorder = null, stream = null, chunks = [];
+if (cloudConfigured) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  $('videoSignIn').disabled = false;
+  $('videoSignUp').disabled = false;
+  authStatus.textContent = 'Storage settings detected. Create the shared account or sign in.';
+} else {
+  $('videoSignIn').disabled = true;
+  $('videoSignUp').disabled = true;
+  authStatus.textContent = 'Setup needed: add your Supabase Project URL and publishable/anon key in this HTML, then publish again.';
+}
+function signedInUser() { return supabase?.auth.getSession(); }
+async function refreshAuthUI() {
+  if (!supabase) return;
+  const { data: { session } } = await supabase.auth.getSession();
+  $('videoSignOut').hidden = !session;
+  $('videoSignIn').hidden = !!session;
+  $('videoSignUp').hidden = !!session;
+  $('videoEmail').hidden = !!session;
+  $('videoPassword').hidden = !!session;
+  if (session) {
+    authStatus.textContent = 'Signed in 💗 Your shared memory room is ready.';
+    await loadSharedVideos();
+  } else {
+    authStatus.textContent = 'Sign in to upload and view your shared videos.';
+    $('sharedVideoGrid').replaceChildren();
+    listStatus.textContent = 'Sign in to see the videos saved by either of you.';
+  }
+}
+async function authAction(kind) {
+  if (!supabase) { authStatus.textContent = 'Complete the Supabase setup first. See the companion setup guide.'; return; }
+  const email = $('videoEmail').value.trim(), password = $('videoPassword').value;
+  if (!email || !password) { authStatus.textContent = 'Enter the shared account email and password first.'; return; }
+  authStatus.textContent = kind === 'signup' ? 'Creating account…' : 'Signing in…';
+  const result = kind === 'signup' ? await supabase.auth.signUp({email, password}) : await supabase.auth.signInWithPassword({email, password});
+  if (result.error) { authStatus.textContent = result.error.message; return; }
+  if (kind === 'signup' && !result.data.session) {
+    authStatus.textContent = 'Account created. Check that email to confirm it, then sign in. If email confirmation is disabled in your project, you can sign in now.';
+  } else { authStatus.textContent = 'Success! Loading your shared memories…'; }
+  await refreshAuthUI();
+}
+$('videoSignIn').addEventListener('click', () => authAction('signin'));
+$('videoSignUp').addEventListener('click', () => authAction('signup'));
+$('videoSignOut').addEventListener('click', async () => { if (!supabase) return; await supabase.auth.signOut(); await refreshAuthUI(); });
+if (supabase) supabase.auth.onAuthStateChange(() => { setTimeout(refreshAuthUI, 0); });
+function showChosen(blob, name) {
+  chosenBlob = blob; chosenName = name || 'memory-video.webm';
+  const preview = $('recordPreview');
+  if (preview.dataset.objectUrl) URL.revokeObjectURL(preview.dataset.objectUrl);
+  const url = URL.createObjectURL(blob); preview.dataset.objectUrl = url; preview.src = url; preview.hidden = false;
+  $('saveVideo').disabled = false; $('clearVideo').disabled = false;
+  recordStatus.textContent = `Ready to save: ${chosenName} (${(blob.size / 1024 / 1024).toFixed(1)} MB).`;
+}
+$('videoFile').addEventListener('change', event => {
+  const file = event.target.files?.[0]; if (!file) return;
+  if (!file.type.startsWith('video/')) { recordStatus.textContent = 'Please choose a video file.'; return; }
+  if (file.size > 50 * 1024 * 1024) { recordStatus.textContent = 'This clip is over 50 MB. Please trim or compress it first.'; event.target.value = ''; return; }
+  showChosen(file, file.name);
+});
+$('startRecording').addEventListener('click', async () => {
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) { recordStatus.textContent = 'Video recording is not supported by this browser. Try the latest Chrome browser over HTTPS.'; return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:true});
+    const preview = $('recordPreview'); preview.srcObject = stream; preview.hidden = false; preview.muted = true; await preview.play().catch(()=>{});
+    const mime = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t => MediaRecorder.isTypeSupported(t));
+    recorder = mime ? new MediaRecorder(stream,{mimeType:mime}) : new MediaRecorder(stream); chunks = [];
+    recorder.ondataavailable = e => { if (e.data?.size) chunks.push(e.data); };
+    recorder.onerror = () => { recordStatus.textContent = 'Recording failed. Please try again or upload a clip.'; stopStream(); };
+    recorder.onstop = () => {
+      const type = recorder?.mimeType || 'video/webm';
+      const blob = new Blob(chunks,{type});
+      stopStream(); preview.srcObject = null; preview.muted = false;
+      if (!blob.size) { recordStatus.textContent = 'No video was captured. Please try again.'; return; }
+      if (blob.size > 50 * 1024 * 1024) { recordStatus.textContent = 'Recording exceeds 50 MB. Please record a shorter clip.'; return; }
+      showChosen(blob, `rasmalaiii-memory-${Date.now()}.webm`);
+    };
+    recorder.start(1000); $('startRecording').disabled = true; $('stopRecording').disabled = false;
+    recordStatus.textContent = 'Recording… say something sweet 💗 Tap Stop recording when you are done.';
+  } catch (e) { recordStatus.textContent = 'Camera/microphone access was denied or unavailable. Allow permissions and try again.'; stopStream(); }
+});
+function stopStream() { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; }
+$('stopRecording').addEventListener('click', () => { if (recorder && recorder.state !== 'inactive') recorder.stop(); $('startRecording').disabled = false; $('stopRecording').disabled = true; });
+$('clearVideo').addEventListener('click', () => {
+  chosenBlob = null; chosenName = ''; $('videoFile').value = ''; $('saveVideo').disabled = true; $('clearVideo').disabled = true;
+  const preview = $('recordPreview'); preview.pause(); preview.removeAttribute('src'); preview.srcObject = null; preview.hidden = true;
+  if (preview.dataset.objectUrl) { URL.revokeObjectURL(preview.dataset.objectUrl); delete preview.dataset.objectUrl; }
+  recordStatus.textContent = 'Choose a video or record a new memory.';
+});
+$('saveVideo').addEventListener('click', async () => {
+  if (!chosenBlob) return;
+  if (!supabase) { recordStatus.textContent = 'Online storage is not configured yet. Follow the setup guide first.'; return; }
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { recordStatus.textContent = 'Sign in first to save this clip to the shared room.'; return; }
+  if (chosenBlob.size > 50 * 1024 * 1024) { recordStatus.textContent = 'Clip is too large (50 MB maximum).'; return; }
+  const caption = $('videoTitle').value.trim() || 'A little memory for us 💗';
+  const ext = chosenBlob.type.includes('mp4') ? 'mp4' : chosenBlob.type.includes('quicktime') ? 'mov' : 'webm';
+  const path = `${session.user.id}/${crypto.randomUUID()}.${ext}`;
+  $('saveVideo').disabled = true; recordStatus.textContent = 'Uploading our memory… keep this page open.';
+  const upload = await supabase.storage.from(VIDEO_BUCKET).upload(path, chosenBlob, {contentType:chosenBlob.type || 'video/webm', upsert:false});
+  if (upload.error) { recordStatus.textContent = `Upload failed: ${upload.error.message}`; $('saveVideo').disabled = false; return; }
+  const inserted = await supabase.from('shared_videos').insert({user_id:session.user.id, object_path:path, title:caption});
+  if (inserted.error) {
+    await supabase.storage.from(VIDEO_BUCKET).remove([path]);
+    recordStatus.textContent = `Video uploaded but its record could not be saved: ${inserted.error.message}`; $('saveVideo').disabled = false; return;
+  }
+  recordStatus.textContent = 'Saved to your shared memory room! 💗 It will appear on both devices when signed in.';
+  await loadSharedVideos();
+});
+async function loadSharedVideos() {
+  if (!supabase) return;
+  const { data: { session } } = await supabase.auth.getSession(); if (!session) return;
+  listStatus.textContent = 'Loading our memories…'; $('sharedVideoGrid').replaceChildren();
+  const { data, error } = await supabase.from('shared_videos').select('id, object_path, title, created_at').order('created_at',{ascending:false});
+  if (error) { listStatus.textContent = `Could not load videos: ${error.message}. Check the setup SQL and storage policies.`; return; }
+  if (!data?.length) { listStatus.textContent = 'No videos yet. Record or upload your first shared memory above. 🌷'; return; }
+  listStatus.textContent = `${data.length} shared ${data.length === 1 ? 'memory' : 'memories'} 💗`;
+  for (const item of data) {
+    const signed = await supabase.storage.from(VIDEO_BUCKET).createSignedUrl(item.object_path, 60 * 60);
+    if (signed.error) continue;
+    const card = document.createElement('article'); card.className = 'shared-video';
+    const video = document.createElement('video'); video.src = signed.data.signedUrl; video.controls = true; video.playsInline = true; video.preload = 'metadata';
+    const title = document.createElement('strong'); title.textContent = item.title || 'A little memory 💗';
+    const date = document.createElement('small'); date.textContent = new Date(item.created_at).toLocaleString();
+    const actions = document.createElement('div'); actions.className = 'video-actions';
+    const del = document.createElement('button'); del.className = 'btn secondary'; del.textContent = 'Delete memory';
+    del.addEventListener('click', async () => {
+      if (!confirm('Delete this video from the shared room for both of you?')) return;
+      del.disabled = true;
+      const removed = await supabase.storage.from(VIDEO_BUCKET).remove([item.object_path]);
+      if (removed.error) { alert('Could not delete video: ' + removed.error.message); del.disabled = false; return; }
+      const row = await supabase.from('shared_videos').delete().eq('id',item.id);
+      if (row.error) { alert('Video file deleted, but metadata cleanup failed: ' + row.error.message); }
+      await loadSharedVideos();
+    });
+    actions.append(del); card.append(video,title,date,actions); $('sharedVideoGrid').append(card);
+  }
+}
+$('refreshVideos').addEventListener('click', loadSharedVideos);
+if (supabase) refreshAuthUI();
+</script>
+
 </body>
 </html>
